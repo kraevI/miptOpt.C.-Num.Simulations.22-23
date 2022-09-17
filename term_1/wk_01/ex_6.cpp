@@ -1,63 +1,19 @@
-#include <iostream>
-#include <sstream>
+﻿#include <iostream>
+#include <fstream>
+#include <string>
 
-class NSeq{
-public:
-    NSeq(int start, int counter_lim): start(start), counter_lim(counter_lim), value(start){}
+int main(int argc, char* argv[]) {
+	int n;
+	if (argc != 2) return 1;
+	n = std::stoi(argv[1]);
+	std::ofstream out;
+	out.open("ex_6_outFile.txt");
+	if (!out) {
+		std::cout << "File was not open" << std::endl;
+		return 2;
+	}
+	for (int i = 1; i <= n; i++) out << i << " ";
+	out.close();
 
-    int get_value(){
-        return value;
-    }
-
-    void reset(){
-        value = start;
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, NSeq& sequence);
-
-private:
-    int start, counter_lim, value;
-
-    int next(){
-        const int result = value;
-        const int current_idx = value - start + 1;
-        if(current_idx < counter_lim){
-            value++;
-        }
-        return result;
-    }
-};
-
-std::ostream& operator<<(std::ostream& os, NSeq& sequence){
-    os << sequence.next() << std::endl;
-    return os;
-}
-
-void write_file(std::ostream& stream, NSeq& sequence, const int quantity){
-    for (int i=0; i<quantity; i++ ){
-        stream << sequence;
-    }
-}
-
-int main(int argc, char** argv){
-    // process cmd args (NAIVE):
-    if (argc != 2){
-        std::cerr << "Error: wrong number of arguments. Aborting" << std::endl;
-        return -1;
-    }
-
-    std::istringstream ss(argv[1]);
-    int n;
-    if (!(ss >> n)) {
-        std::cerr << "Invalid number: " << argv[1] << '\n';
-    } else if (!ss.eof()) {
-        std::cerr << "Trailing characters after number: " << argv[1] << std::endl;
-    }
-
-    std::cout<< "n = " << n << std::endl;
-    // print sequence to stdout
-    auto sequence = NSeq(1, n);
-    write_file(std::cout, sequence, n);
-
-    return 0;
+	return 0;
 }

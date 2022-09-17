@@ -1,52 +1,34 @@
-#include <iostream>
-#include <sstream>
+﻿#include <iostream>
+#include <fstream>
+#include <string>
 
-class FibSeq{
-public:
-    FibSeq(int first, int second): first(first), second(second), third(0){}
+int main(int argc, char* argv[]) {
+	int n;
+	if (argc != 2) return 1;
+	n = std::stoi(argv[1]);
 
-    friend std::ostream& operator<<(std::ostream& os, FibSeq& sequence);
-private:
-    int first, second, third;
+	int * fibonacci_array = new int[100];
+	fibonacci_array[1] = 1;
+	fibonacci_array[2] = 1;
+	for (int i = 3; i <= n; i++) {
+		fibonacci_array[i] = fibonacci_array[i - 1] + fibonacci_array[i - 2];
+	}
 
-    int next(){
-        third = first + second;
-        first = second;
-        second = third;
-        return third;
-    }
-};
+	std::ofstream out;
+	out.open("ex_7_outFile.txt");
+	if (!out) {
+		std::cout << "File was not open" << std::endl;
+		return 2;
+	}
 
-std::ostream& operator<<(std::ostream& os, FibSeq& sequence){
-    os << sequence.next() << std::endl;
-    return os;
-}
 
-void stream_sequence(std::ostream& stream, FibSeq& sequence, const int quantity){
-    for (int i=0; i<quantity; i++ ){
-        stream << sequence;
-    }
-}
+	out << "serial number:" << "  " <<"number:" << "\n";
+	for (int i = 1; i <= n; i++) {
+		if (i < 10) out << "               " << i << "       " << fibonacci_array[i] << "\n";
+		else out << "               " << i << "      " << fibonacci_array[i] << "\n";
+	}
+	out.close();
 
-int main(int argc, char** argv){
-    // process cmd args (NAIVE):
-    if (argc != 2){
-        std::cerr << "Error: wrong number of arguments. N value required. Aborting..." << std::endl;
-        return -1;
-    }
-
-    std::istringstream ss(argv[1]);
-    int n;
-    if (!(ss >> n)) {
-        std::cerr << "Invalid number: " << argv[1] << '\n';
-    } else if (!ss.eof()) {
-        std::cerr << "Trailing characters after number: " << argv[1] << std::endl;
-    }
-
-    std::cout<< "n = " << n << std::endl;
-    // print sequence to stdout
-    auto sequence = FibSeq(1, 1);
-    stream_sequence(std::cout, sequence, n-2);
-
-    return 0;
+	delete[]fibonacci_array;
+	return 0;
 }
